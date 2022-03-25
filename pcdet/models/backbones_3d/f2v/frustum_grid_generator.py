@@ -85,7 +85,7 @@ class FrustumGridGenerator(nn.Module):
         voxel_grid = voxel_grid.repeat_interleave(repeats=B, dim=0)
 
         # Transform to camera frame
-        camera_grid = kornia.transform_points(trans_01=trans, points_1=voxel_grid)
+        camera_grid = kornia.geometry.linalg.transform_points(trans_01=trans, points_1=voxel_grid)
 
         # Project to image
         I_C = I_C.reshape(B, 1, 1, 3, 4)
