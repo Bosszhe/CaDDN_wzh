@@ -17,3 +17,5 @@ output
 version.py
 
 ./data
+
+*.out
