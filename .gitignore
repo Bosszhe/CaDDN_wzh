@@ -19,3 +19,4 @@ version.py
 ./data
 
 *.out
+.vscode
