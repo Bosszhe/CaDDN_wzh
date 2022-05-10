@@ -77,7 +77,7 @@ class KittiDataset(DatasetTemplate):
         Returns:
             image [np.ndarray(H, W, 3)]: RGB Image
         """
-        img_file = self.root_split_path / 'image_2' / ('%s.png' % idx)
+        img_file = self.root_split_path / 'image_2' / ('%s.jpg' % idx)
         assert img_file.exists()
         image = io.imread(img_file)
         image = image[:, :, :3]  # Remove alpha channel
@@ -86,7 +86,7 @@ class KittiDataset(DatasetTemplate):
         return image
 
     def get_image_shape(self, idx):
-        img_file = self.root_split_path / 'image_2' / ('%s.png' % idx)
+        img_file = self.root_split_path / 'image_2' / ('%s.jpg' % idx)
         assert img_file.exists()
         return np.array(io.imread(img_file).shape[:2], dtype=np.int32)
 
