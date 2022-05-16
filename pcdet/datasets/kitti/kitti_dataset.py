@@ -77,8 +77,8 @@ class KittiDataset(DatasetTemplate):
         Returns:
             image [np.ndarray(H, W, 3)]: RGB Image
         """
-        # img_file = self.root_split_path / 'image_2' / ('%s.png' % idx)
-        img_file = self.root_split_path / 'image_2' / ('%s.jpg' % idx)
+        img_file = self.root_split_path / 'image_2' / ('%s.png' % idx)
+        # img_file = self.root_split_path / 'image_2' / ('%s.jpg' % idx)
         assert img_file.exists()
         image = io.imread(img_file)
         image = image[:, :, :3]  # Remove alpha channel
@@ -88,8 +88,8 @@ class KittiDataset(DatasetTemplate):
 
     def get_image_shape(self, idx):
 
-        # img_file = self.root_split_path / 'image_2' / ('%s.png' % idx)
-        img_file = self.root_split_path / 'image_2' / ('%s.jpg' % idx)
+        img_file = self.root_split_path / 'image_2' / ('%s.png' % idx)
+        # img_file = self.root_split_path / 'image_2' / ('%s.jpg' % idx)
 
         assert img_file.exists()
         return np.array(io.imread(img_file).shape[:2], dtype=np.int32)
@@ -108,7 +108,6 @@ class KittiDataset(DatasetTemplate):
             depth [np.ndarray(H, W)]: Depth map
         """
         depth_file = self.root_split_path / 'depth_2' / ('%s.png' % idx)
-        # depth_file = self.root_split_path / 'depth_2' / ('%s.jpg' % idx)
         assert depth_file.exists()
         depth = io.imread(depth_file)
         depth = depth.astype(np.float32)
