@@ -16,22 +16,26 @@
 # # 执行 sbatch 命令前先通过 conda activate [env_name] 进入环境
 
 
-
-#####################
-
-# srun --gres gpu:a100:4 --time 2-12:00:00 --job-name bevfuser_wzh python -m torch.distributed.launch --nproc_per_node=8 train.py --launcher slurm ----cfg_file ./cfgs/kitti_models/CaDDN.yaml
-
-#####################
+###################### dist_train scripts
 # set -x
 # NGPUS=$1
 # PY_ARGS=${@:2}
 
 # python -m torch.distributed.launch --nproc_per_node=${NGPUS} train.py --batch_size 2 --launcher pytorch ${PY_ARGS} 
 
-#####################
+###################### Train in slurm
 
-# CUDA_VISIBLE_DEVICES=3,6 python -m torch.distributed.launch --nproc_per_node=2 train.py --batch_size 4 --launcher pytorch --cfg_file cfgs/kitti_models/CaDDN.yaml --extra_tag DEBUG
+# srun --gres gpu:a100:4 --time 2-12:00:00 --job-name bevfuser_wzh python -m torch.distributed.launch --nproc_per_node=8 train.py --launcher slurm ----cfg_file ./cfgs/kitti_models/CaDDN.yaml
 
-#####################
 
-python -m torch.distributed.launch --nproc_per_node=2 train.py --launcher pytorch --cfg_file cfgs/kitti_models/CaDDN_DAIR-V2X_kitti_v.yaml --extra_tag epoch_80
+######################Train with a single GPU in slurm
+
+# python train.py --cfg_file ./cfgs/kitti_models/CaDDN_DAIR-V2X_faster_kitti_v.yaml --extra_tag faster_kitti_v
+
+######################Train with multiple GPUs
+
+python -m torch.distributed.launch --nproc_per_node 2 train.py --launcher pytorch --cfg_file cfgs/kitti_models/CaDDN_DAIR-V2X_kitti_v.yaml --extra_tag epoch_80_gpu_2
+
+######################Test with a Pretrained model
+
+# python test.py --cfg_file cfgs/kitti_models/CaDDN_DAIR-V2X_kitti_v.yaml --batch_size 1 --ckpt ../output/kitti_models/CaDDN_DAIR-V2X_kitti_v/epoch_80_gpu_2/ckpt/checkpoint_epoch_13.pth --extra_tag epoch_80_gpu_2
