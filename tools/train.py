@@ -58,8 +58,8 @@ def parse_config():
 def main():
     args, cfg = parse_config()
     
-    image_path = Path(cfg.DATA_PATH) / 'kitti' /'training' / 'image_2' / '000000.png'
-    if image_path.exists()
+    image_path = Path(cfg.DATA_CONFIG.DATA_PATH) / 'kitti' /'training' / 'image_2' / '000000.png'
+    if image_path.exists():
         print('YOU ARE USING KITTI')
     else:
         print('YOU ARE USING DAIR-V2X')

@@ -133,6 +133,17 @@ def repeat_eval_ckpt(model, test_loader, args, eval_output_dir, logger, ckpt_dir
 
 def main():
     args, cfg = parse_config()
+
+    # from IPython import embed
+    # embed()
+
+    image_path = Path(cfg.DATA_CONFIG.DATA_PATH) / 'kitti' /'training' / 'image_2' / '000000.png'
+    if image_path.exists():
+        print('YOU ARE USING KITTI')
+    else:
+        print('YOU ARE USING DAIR-V2X')
+
+
     if args.launcher == 'none':
         dist_test = False
         total_gpus = 1
