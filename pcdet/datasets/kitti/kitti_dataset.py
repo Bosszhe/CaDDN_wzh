@@ -79,6 +79,11 @@ class KittiDataset(DatasetTemplate):
         """
         # img_file = self.root_split_path / 'image_2' / ('%s.png' % idx)
         img_file = self.root_split_path / 'image_2' / ('%s.jpg' % idx)
+        
+        if not img_file.exists():
+            img_file = self.root_split_path / 'image_2' / ('%s.png' % idx)
+            print('YOU ARE USING KITTI DATA')
+            
         assert img_file.exists()
         image = io.imread(img_file)
         image = image[:, :, :3]  # Remove alpha channel
@@ -91,9 +96,38 @@ class KittiDataset(DatasetTemplate):
         # img_file = self.root_split_path / 'image_2' / ('%s.png' % idx)
         img_file = self.root_split_path / 'image_2' / ('%s.jpg' % idx)
 
+        if not img_file.exists():
+            img_file = self.root_split_path / 'image_2' / ('%s.png' % idx)
+            print('YOU ARE USING KITTI DATA')
+            
         assert img_file.exists()
         return np.array(io.imread(img_file).shape[:2], dtype=np.int32)
 
+    def get_image_kitti(self, idx):
+        """
+        Loads image for a sample
+        Args:
+            idx [int]: Index of the image sample
+        Returns:
+            image [np.ndarray(H, W, 3)]: RGB Image
+        """
+        img_file = self.root_split_path / 'image_2' / ('%s.png' % idx)
+        # img_file = self.root_split_path / 'image_2' / ('%s.jpg' % idx)
+        assert img_file.exists()
+        image = io.imread(img_file)
+        image = image[:, :, :3]  # Remove alpha channel
+        image = image.astype(np.float32)
+        image /= 255.0
+        return image
+    
+    def get_image_shape_kitti(self, idx):
+
+        img_file = self.root_split_path / 'image_2' / ('%s.png' % idx)
+        # img_file = self.root_split_path / 'image_2' / ('%s.jpg' % idx)
+
+        assert img_file.exists()
+        return np.array(io.imread(img_file).shape[:2], dtype=np.int32)
+    
     def get_label(self, idx):
         label_file = self.root_split_path / 'label_2' / ('%s.txt' % idx)
         assert label_file.exists()

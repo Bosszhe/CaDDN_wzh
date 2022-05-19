@@ -33,9 +33,14 @@
 # python train.py --cfg_file ./cfgs/kitti_models/CaDDN_DAIR-V2X_faster_kitti_v.yaml --extra_tag faster_kitti_v
 
 ######################Train with multiple GPUs
+# bev2
+# python -m torch.distributed.launch --nproc_per_node 2 train.py --launcher pytorch --cfg_file cfgs/kitti_models/CaDDN_DAIR-V2X_kitti_v.yaml --extra_tag epoch_80_gpu_2 --ckpt ../output/kitti_models/CaDDN_DAIR-V2X_kitti_v/epoch_80_gpu_2/ckpt/checkpoint_epoch_27.pth
 
-python -m torch.distributed.launch --nproc_per_node 2 train.py --launcher pytorch --cfg_file cfgs/kitti_models/CaDDN_DAIR-V2X_kitti_v.yaml --extra_tag epoch_80_gpu_2
+# bev3
+# python -m torch.distributed.launch --nproc_per_node 2 train.py --launcher pytorch --cfg_file cfgs/kitti_models/CaDDN_DAIR-V2X_kitti_v.yaml --extra_tag epoch_80_gpu_2_seed_666 --fix_random_seed --ckpt ../output/kitti_models/CaDDN_DAIR-V2X_kitti_v/epoch_80_gpu_2_seed_666/ckpt/checkpoint_epoch_13.pth
 
+# bev4
+python -m torch.distributed.launch --nproc_per_node 2 train.py --launcher pytorch --cfg_file cfgs/kitti_models/CaDDN_DAIR-V2X_test.yaml --extra_tag epoch_80_gpu_2_seed_666 --fix_random_seed --ckpt ../output/kitti_models/CaDDN_DAIR-V2X_kitti_v/epoch_80_gpu_2_seed_666/ckpt/checkpoint_epoch_13.pth
 ######################Test with a Pretrained model
 
 # python test.py --cfg_file cfgs/kitti_models/CaDDN_DAIR-V2X_kitti_v.yaml --batch_size 1 --ckpt ../output/kitti_models/CaDDN_DAIR-V2X_kitti_v/epoch_80_gpu_2/ckpt/checkpoint_epoch_13.pth --extra_tag epoch_80_gpu_2

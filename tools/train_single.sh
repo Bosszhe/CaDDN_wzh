@@ -10,4 +10,7 @@
 # srun --gres gpu:a100-80G:1 --time 1-00:00:00 --job-name caddn_v_test --output %A.out python test.py --cfg_file cfgs/kitti_models/CaDDN_DAIR-V2X_kitti_v.yaml --batch_size 1 --ckpt ../checkpoints/checkpoint_epoch_35.pth
 
 
-srun --gres gpu:a100-80G:1 --time 1-00:00:00 --job-name caddn_kitti_test --output %A.out python test.py --cfg_file cfgs/kitti_models/CaDDN_DAIR-V2X_kitti_v.yaml --batch_size 1 --ckpt ../checkpoints/checkpoint_epoch_35.pth
+# srun --gres gpu:a100-80G:1 --time 1-00:00:00 --job-name caddn_kitti_test --output %A.out python test.py --cfg_file cfgs/kitti_models/CaDDN_DAIR-V2X_kitti_v.yaml --batch_size 1 --ckpt ../checkpoints/checkpoint_epoch_35.pth
+
+
+python train.py --cfg_file cfgs/kitti_models/CaDDN_DAIR-V2X_kitti_v.yaml --extra_tag epoch_80_lr_104 --fix_random_seed
