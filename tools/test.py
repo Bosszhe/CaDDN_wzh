@@ -137,7 +137,7 @@ def main():
     # from IPython import embed
     # embed()
 
-    image_path = Path(cfg.DATA_CONFIG.DATA_PATH) / 'kitti' /'training' / 'image_2' / '000000.png'
+    image_path = Path(cfg.DATA_CONFIG.DATA_PATH) /'training' / 'image_2' / '000000.png'
     if image_path.exists():
         print('YOU ARE USING KITTI')
     else:

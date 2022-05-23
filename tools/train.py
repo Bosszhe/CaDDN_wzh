@@ -60,7 +60,7 @@ def parse_config():
 def main():
     args, cfg = parse_config()
     
-    image_path = Path(cfg.DATA_CONFIG.DATA_PATH) / 'kitti' /'training' / 'image_2' / '000000.png'
+    image_path = Path(cfg.DATA_CONFIG.DATA_PATH) /'training' / 'image_2' / '000000.png'
     if image_path.exists():
         print('YOU ARE USING KITTI')
     else:
@@ -164,7 +164,7 @@ def main():
     # embed()
 
     # Apex Automatic Mixed Precision
-    # model, optimizer = amp.initialize(model,optimizer,opt_level='O1')
+    model, optimizer = amp.initialize(model,optimizer,opt_level='O1')
     
     
     # -----------------------start training---------------------------

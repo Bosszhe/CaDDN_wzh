@@ -20,7 +20,7 @@ def train_one_epoch(model, optimizer, train_loader, model_func, lr_scheduler, ac
     # embed()
 
     # Apex Automatic Mixed Precision
-    model, optimizer = amp.initialize(model,optimizer,opt_level='O1')
+    # model, optimizer = amp.initialize(model,optimizer,opt_level='O1')
 
 
     for cur_it in range(total_it_each_epoch):
