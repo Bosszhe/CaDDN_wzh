@@ -24,6 +24,7 @@ def split_bn_bias(layer_groups):
     return split_groups
 
 
+
 def get_master(layer_groups, flat_master: bool = False):
     "Return two lists, one for the model parameters in FP16 and one for the master parameters in FP32."
     split_groups = split_bn_bias(layer_groups)
@@ -114,8 +115,14 @@ class OptimWrapper():
         "Create an `optim.Optimizer` from `opt_func` with `lr`. Set lr on `layer_groups`."
         split_groups = split_bn_bias(layer_groups)
         opt = opt_func([{'params': trainable_params(l), 'lr': 0} for l in split_groups])
+        
+        
+        # from IPython import embed
+        # embed() 
+      
         opt = cls(opt, **kwargs)
         opt.lr, opt.opt_func = listify(lr, layer_groups), opt_func
+        
         return opt
 
     def new(self, layer_groups):

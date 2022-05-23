@@ -17,6 +17,8 @@ from pcdet.utils import common_utils
 from train_utils.optimization import build_optimizer, build_scheduler
 from train_utils.train_utils import train_model
 
+from apex import amp
+
 
 def parse_config():
     parser = argparse.ArgumentParser(description='arg parser')
@@ -58,7 +60,7 @@ def parse_config():
 def main():
     args, cfg = parse_config()
     
-    image_path = Path(cfg.DATA_CONFIG.DATA_PATH)  /'training' / 'image_2' / '000000.png'
+    image_path = Path(cfg.DATA_CONFIG.DATA_PATH) /'training' / 'image_2' / '000000.png'
     if image_path.exists():
         print('YOU ARE USING KITTI')
     else:
@@ -156,7 +158,15 @@ def main():
         optimizer, total_iters_each_epoch=len(train_loader), total_epochs=args.epochs,
         last_epoch=last_epoch, optim_cfg=cfg.OPTIMIZATION
     )
+    
+    
+    # from IPython import embed
+    # embed()
 
+    # Apex Automatic Mixed Precision
+    model, optimizer = amp.initialize(model,optimizer,opt_level='O1')
+    
+    
     # -----------------------start training---------------------------
     logger.info('**********************Start training %s/%s(%s)**********************'
                 % (cfg.EXP_GROUP_PATH, cfg.TAG, args.extra_tag))
