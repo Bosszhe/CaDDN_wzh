@@ -563,9 +563,21 @@ if __name__ == '__main__':
         from easydict import EasyDict
         dataset_cfg = EasyDict(yaml.load(open(sys.argv[2])))
         ROOT_DIR = (Path(__file__).resolve().parent / '../../../').resolve()
+        # create_kitti_infos(
+        #     dataset_cfg=dataset_cfg,
+        #     class_names=['Car', 'Pedestrian', 'Cyclist'],
+        #     data_path=ROOT_DIR / 'data' / 'kitti',
+        #     save_path=ROOT_DIR / 'data' / 'kitti'
+        # )
+        # create_kitti_infos(
+        #     dataset_cfg=dataset_cfg,
+        #     class_names=['Car', 'Pedestrian', 'Cyclist'],
+        #     data_path=ROOT_DIR / 'data' / 'vic-v-test',
+        #     save_path=ROOT_DIR / 'data' / 'vic-v-test'
+        # )
         create_kitti_infos(
             dataset_cfg=dataset_cfg,
             class_names=['Car', 'Pedestrian', 'Cyclist'],
-            data_path=ROOT_DIR / 'data' / 'kitti',
-            save_path=ROOT_DIR / 'data' / 'kitti'
+            data_path=ROOT_DIR / 'data' / 'kitti_i',
+            save_path=ROOT_DIR / 'data' / 'kitti_i'
         )

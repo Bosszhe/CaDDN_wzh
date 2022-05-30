@@ -4,11 +4,11 @@ import os
 import torch
 import tqdm
 from torch.nn.utils import clip_grad_norm_
-from apex import amp
 
+from torch.cuda.amp import autocast as autocast,GradScaler
 
 def train_one_epoch(model, optimizer, train_loader, model_func, lr_scheduler, accumulated_iter, optim_cfg,
-                    rank, tbar, total_it_each_epoch, dataloader_iter, tb_log=None, leave_pbar=False):
+                    rank, tbar, total_it_each_epoch, dataloader_iter, scaler, tb_log=None, leave_pbar=False):
     if total_it_each_epoch == len(train_loader):
         dataloader_iter = iter(train_loader)
 
@@ -16,13 +16,8 @@ def train_one_epoch(model, optimizer, train_loader, model_func, lr_scheduler, ac
         pbar = tqdm.tqdm(total=total_it_each_epoch, leave=leave_pbar, desc='train', dynamic_ncols=True)
 
 
-    # from IPython import embed
-    # embed()
 
-    # Apex Automatic Mixed Precision
-    # model, optimizer = amp.initialize(model,optimizer,opt_level='O1')
-
-
+    
     for cur_it in range(total_it_each_epoch):
         try:
             batch = next(dataloader_iter)
@@ -38,20 +33,30 @@ def train_one_epoch(model, optimizer, train_loader, model_func, lr_scheduler, ac
         except:
             cur_lr = optimizer.param_groups[0]['lr']
 
-        if tb_log is not None:
-            tb_log.add_scalar('meta_data/learning_rate', cur_lr, accumulated_iter)
+        # if tb_log is not None:
+        #     tb_log.add_scalar('meta_data/learning_rate', cur_lr, accumulated_iter)
 
         model.train()
         optimizer.zero_grad()
 
-        loss, tb_dict, disp_dict = model_func(model, batch)
+
+        with autocast():
+            loss, tb_dict, disp_dict = model_func(model, batch)
+            
+            
+        scaler.scale(loss).backward()
         
-        with amp.scale_loss(loss,optimizer) as scaled_loss:
-            scaled_loss.backward()
+        scaler.step(optimizer)
+        scaler.update()
+        
+        # with amp.scale_loss(loss,optimizer) as scaled_loss:
+        #     scaled_loss.backward()
+        
+        
         # loss.backward()
         
-        clip_grad_norm_(model.parameters(), optim_cfg.GRAD_NORM_CLIP)
-        optimizer.step()
+        # clip_grad_norm_(model.parameters(), optim_cfg.GRAD_NORM_CLIP)
+        # optimizer.step()
 
         accumulated_iter += 1
         disp_dict.update({'loss': loss.item(), 'lr': cur_lr})
@@ -74,7 +79,7 @@ def train_one_epoch(model, optimizer, train_loader, model_func, lr_scheduler, ac
 
 
 def train_model(model, optimizer, train_loader, model_func, lr_scheduler, optim_cfg,
-                start_epoch, total_epochs, start_iter, rank, tb_log, ckpt_save_dir, train_sampler=None,
+                start_epoch, total_epochs, start_iter, rank, tb_log, ckpt_save_dir, scaler, train_sampler=None,
                 lr_warmup_scheduler=None, ckpt_save_interval=1, max_ckpt_save_num=50,
                 merge_all_iters_to_one_epoch=False):
     accumulated_iter = start_iter
@@ -102,9 +107,10 @@ def train_model(model, optimizer, train_loader, model_func, lr_scheduler, optim_
                 rank=rank, tbar=tbar, tb_log=tb_log,
                 leave_pbar=(cur_epoch + 1 == total_epochs),
                 total_it_each_epoch=total_it_each_epoch,
-                dataloader_iter=dataloader_iter
+                dataloader_iter=dataloader_iter,
+                scaler=scaler
             )
-
+  
             # save trained model
             trained_epoch = cur_epoch + 1
             if trained_epoch % ckpt_save_interval == 0 and rank == 0:

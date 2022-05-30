@@ -169,7 +169,7 @@ def main():
 
     # Apex Automatic Mixed Precision
     # model, optimizer = amp.initialize(model,optimizer,opt_level='O1')
-    
+    scaler=GradScaler()
     
     # -----------------------start training---------------------------
     logger.info('**********************Start training %s/%s(%s)**********************'
