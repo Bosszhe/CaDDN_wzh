@@ -159,12 +159,15 @@ MODEL:
 
 
 OPTIMIZATION:
-    BATCH_SIZE_PER_GPU: 4
+    BATCH_SIZE_PER_GPU: 2
     NUM_EPOCHS: 80
 
     # OPTIMIZER: adam_onecycle
     OPTIMIZER: adam
+<<<<<<< HEAD
     OPTIMIZER: sgd
+=======
+>>>>>>> 83699365f25d9e7545605cd9029ce6527c8e6253
     LR: 0.001
     WEIGHT_DECAY: 0.01
     MOMENTUM: 0.9
