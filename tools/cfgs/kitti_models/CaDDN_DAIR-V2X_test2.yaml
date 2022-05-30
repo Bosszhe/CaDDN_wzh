@@ -1,7 +1,7 @@
 CLASS_NAMES: ['Car', 'Pedestrian', 'Cyclist']
 
 DATA_CONFIG:
-    _BASE_CONFIG_: cfgs/dataset_configs/kitti_dataset.yaml
+    _BASE_CONFIG_: cfgs/dataset_configs/kitti_dataset111.yaml
     POINT_CLOUD_RANGE: [2, -30.08, -3.0, 46.8, 30.08, 1.0]
 
     DATA_PROCESSOR:
@@ -163,9 +163,7 @@ OPTIMIZATION:
     NUM_EPOCHS: 80
 
     OPTIMIZER: adam_onecycle
-    # OPTIMIZER: adam
-    # OPTIMIZER: sgd
-    LR: 0.001
+    LR: 0.0001
     WEIGHT_DECAY: 0.01
     MOMENTUM: 0.9
 
