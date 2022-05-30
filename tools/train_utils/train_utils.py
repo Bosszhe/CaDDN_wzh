@@ -4,7 +4,6 @@ import os
 import torch
 import tqdm
 from torch.nn.utils import clip_grad_norm_
-from apex import amp
 
 
 def train_one_epoch(model, optimizer, train_loader, model_func, lr_scheduler, accumulated_iter, optim_cfg,
@@ -15,12 +14,6 @@ def train_one_epoch(model, optimizer, train_loader, model_func, lr_scheduler, ac
     if rank == 0:
         pbar = tqdm.tqdm(total=total_it_each_epoch, leave=leave_pbar, desc='train', dynamic_ncols=True)
 
-
-    # from IPython import embed
-    # embed()
-
-    # Apex Automatic Mixed Precision
-    # model, optimizer = amp.initialize(model,optimizer,opt_level='O1')
 
 
     for cur_it in range(total_it_each_epoch):
@@ -46,9 +39,7 @@ def train_one_epoch(model, optimizer, train_loader, model_func, lr_scheduler, ac
 
         loss, tb_dict, disp_dict = model_func(model, batch)
         
-        with amp.scale_loss(loss,optimizer) as scaled_loss:
-            scaled_loss.backward()
-        # loss.backward()
+        loss.backward()
         
         clip_grad_norm_(model.parameters(), optim_cfg.GRAD_NORM_CLIP)
         optimizer.step()

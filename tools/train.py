@@ -17,7 +17,7 @@ from pcdet.utils import common_utils
 from train_utils.optimization import build_optimizer, build_scheduler
 from train_utils.train_utils import train_model
 
-from apex import amp
+# from apex import amp
 
 
 def parse_config():
@@ -61,10 +61,7 @@ def main():
     args, cfg = parse_config()
     
     image_path = Path(cfg.DATA_CONFIG.DATA_PATH) /'training' / 'image_2' / '000000.png'
-<<<<<<< HEAD
     image_path2 = Path(cfg.DATA_CONFIG.DATA_PATH) / 'training' / 'image_2' / '000000.jpg'
-=======
->>>>>>> 83699365f25d9e7545605cd9029ce6527c8e6253
     if image_path.exists():
         print('YOU ARE USING KITTI')
     else:
@@ -169,7 +166,7 @@ def main():
     # embed()
 
     # Apex Automatic Mixed Precision
-    model, optimizer = amp.initialize(model,optimizer,opt_level='O1')
+    # model, optimizer = amp.initialize(model,optimizer,opt_level='O1')
     
     
     # -----------------------start training---------------------------
