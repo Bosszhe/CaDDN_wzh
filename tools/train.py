@@ -34,7 +34,7 @@ def parse_config():
     parser.add_argument('--fix_random_seed', action='store_true', default=False, help='')
     parser.add_argument('--ckpt_save_interval', type=int, default=1, help='number of training epochs')
     parser.add_argument('--local_rank', type=int, default=0, help='local rank for distributed training')
-    parser.add_argument('--max_ckpt_save_num', type=int, default=30, help='max number of saved checkpoint')
+    parser.add_argument('--max_ckpt_save_num', type=int, default=80, help='max number of saved checkpoint')
     parser.add_argument('--merge_all_iters_to_one_epoch', action='store_true', default=False, help='')
     parser.add_argument('--set', dest='set_cfgs', default=None, nargs=argparse.REMAINDER,
                         help='set extra config keys if needed')
@@ -58,10 +58,12 @@ def parse_config():
 def main():
     args, cfg = parse_config()
     
-    image_path = Path(cfg.DATA_CONFIG.DATA_PATH) / 'kitti' /'training' / 'image_2' / '000000.png'
+    image_path = Path(cfg.DATA_CONFIG.DATA_PATH) /'training' / 'image_2' / '000000.png'
+    image_path2 = Path(cfg.DATA_CONFIG.DATA_PATH) / 'training' / 'image_2' / '000000.jpg'
     if image_path.exists():
         print('YOU ARE USING KITTI')
     else:
+        print(image_path2.exists())
         print('YOU ARE USING DAIR-V2X')
     
     
@@ -193,7 +195,8 @@ def main():
     )
     eval_output_dir = output_dir / 'eval' / 'eval_with_train'
     eval_output_dir.mkdir(parents=True, exist_ok=True)
-    args.start_epoch = max(args.epochs - 10, 0)  # Only evaluate the last 10 epochs
+    # args.start_epoch = max(args.epochs - 30, 0)  # Only evaluate the last 30 epochs
+    args.start_epoch = 0  # Evaluate all epochs
 
     repeat_eval_ckpt(
         model.module if dist_train else model,

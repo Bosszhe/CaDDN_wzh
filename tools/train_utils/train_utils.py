@@ -29,8 +29,8 @@ def train_one_epoch(model, optimizer, train_loader, model_func, lr_scheduler, ac
         except:
             cur_lr = optimizer.param_groups[0]['lr']
 
-        if tb_log is not None:
-            tb_log.add_scalar('meta_data/learning_rate', cur_lr, accumulated_iter)
+        # if tb_log is not None:
+        #     tb_log.add_scalar('meta_data/learning_rate', cur_lr, accumulated_iter)
 
         model.train()
         optimizer.zero_grad()
@@ -92,7 +92,7 @@ def train_model(model, optimizer, train_loader, model_func, lr_scheduler, optim_
                 total_it_each_epoch=total_it_each_epoch,
                 dataloader_iter=dataloader_iter
             )
-
+  
             # save trained model
             trained_epoch = cur_epoch + 1
             if trained_epoch % ckpt_save_interval == 0 and rank == 0:
