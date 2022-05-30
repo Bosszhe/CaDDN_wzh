@@ -4,7 +4,6 @@ import os
 import torch
 import tqdm
 from torch.nn.utils import clip_grad_norm_
-# from apex import amp
 
 from torch.cuda.amp import autocast as autocast,GradScaler
 
@@ -16,12 +15,6 @@ def train_one_epoch(model, optimizer, train_loader, model_func, lr_scheduler, ac
     if rank == 0:
         pbar = tqdm.tqdm(total=total_it_each_epoch, leave=leave_pbar, desc='train', dynamic_ncols=True)
 
-
-    # from IPython import embed
-    # embed()
-
-    # Apex Automatic Mixed Precision
-    # model, optimizer = amp.initialize(model,optimizer,opt_level='O1')
 
 
     
@@ -117,7 +110,7 @@ def train_model(model, optimizer, train_loader, model_func, lr_scheduler, optim_
                 dataloader_iter=dataloader_iter,
                 scaler=scaler
             )
-
+  
             # save trained model
             trained_epoch = cur_epoch + 1
             if trained_epoch % ckpt_save_interval == 0 and rank == 0:
