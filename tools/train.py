@@ -17,9 +17,11 @@ from pcdet.utils import common_utils
 from train_utils.optimization import build_optimizer, build_scheduler
 from train_utils.train_utils import train_model
 
-from apex import amp
+# from apex import amp
 
+from torch.cuda.amp import autocast as autocast,GradScaler
 
+    
 def parse_config():
     parser = argparse.ArgumentParser(description='arg parser')
     parser.add_argument('--cfg_file', type=str, default=None, help='specify the config for training')
@@ -61,9 +63,11 @@ def main():
     args, cfg = parse_config()
     
     image_path = Path(cfg.DATA_CONFIG.DATA_PATH) /'training' / 'image_2' / '000000.png'
+    image_path2 = Path(cfg.DATA_CONFIG.DATA_PATH) / 'training' / 'image_2' / '000000.jpg'
     if image_path.exists():
         print('YOU ARE USING KITTI')
     else:
+        print(image_path2.exists())
         print('YOU ARE USING DAIR-V2X')
     
     
@@ -164,7 +168,7 @@ def main():
     # embed()
 
     # Apex Automatic Mixed Precision
-    model, optimizer = amp.initialize(model,optimizer,opt_level='O1')
+    # model, optimizer = amp.initialize(model,optimizer,opt_level='O1')
     
     
     # -----------------------start training---------------------------
@@ -187,7 +191,8 @@ def main():
         lr_warmup_scheduler=lr_warmup_scheduler,
         ckpt_save_interval=args.ckpt_save_interval,
         max_ckpt_save_num=args.max_ckpt_save_num,
-        merge_all_iters_to_one_epoch=args.merge_all_iters_to_one_epoch
+        merge_all_iters_to_one_epoch=args.merge_all_iters_to_one_epoch,
+        scaler=scaler
     )
 
     logger.info('**********************End training %s/%s(%s)**********************\n\n\n'
@@ -195,21 +200,27 @@ def main():
 
     logger.info('**********************Start evaluation %s/%s(%s)**********************' %
                 (cfg.EXP_GROUP_PATH, cfg.TAG, args.extra_tag))
-    # test_set, test_loader, sampler = build_dataloader(
-    #     dataset_cfg=cfg.DATA_CONFIG,
-    #     class_names=cfg.CLASS_NAMES,
-    #     batch_size=args.batch_size,
-    #     dist=dist_train, workers=args.workers, logger=logger, training=False
-    # )
     test_set, test_loader, sampler = build_dataloader(
         dataset_cfg=cfg.DATA_CONFIG,
         class_names=cfg.CLASS_NAMES,
-        batch_size=1,
+        batch_size=args.batch_size,
         dist=dist_train, workers=args.workers, logger=logger, training=False
     )
+    
+    
+    # test_set, test_loader, sampler = build_dataloader(
+    #     dataset_cfg=cfg.DATA_CONFIG,
+    #     class_names=cfg.CLASS_NAMES,
+    #     batch_size=1,
+    #     dist=dist_train, workers=args.workers, logger=logger, training=False
+    # )
+        
+        
+        
     eval_output_dir = output_dir / 'eval' / 'eval_with_train'
     eval_output_dir.mkdir(parents=True, exist_ok=True)
-    args.start_epoch = max(args.epochs - 10, 0)  # Only evaluate the last 10 epochs
+    # args.start_epoch = max(args.epochs - 30, 0)  # Only evaluate the last 30 epochs
+    args.start_epoch = 0  # Evaluate all epochs
 
     repeat_eval_ckpt(
         model.module if dist_train else model,
